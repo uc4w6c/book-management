@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title th:if="${errors}">Login Failed</title>
+        <title th:unless="${loggedIn}">Login</title>
+        <meta charset="UTF-8"/>
+    </head>
+<body>
+    <p>出版社IDを入力してください。</p>
+    <form action="/login" method="POST">
+        <ol>
+            <li>
+                <label for="username">出版社ID</label>
+                <input type="text" name="username" id="username"/>
+            </li>
+            <li>
+                <label for="password">パスワード</label>
+                <input type="password" name="password" id="password"/>
+            </li>
+            <li>
+                <input type="submit" value="Login"/>
+            </li>
+            <li th:if="${errors}" id="errors">
+                <span style="color: red;">Login Failed</span>
+            </li>
+        </ol>
+    </form>
+</body>
+</html>

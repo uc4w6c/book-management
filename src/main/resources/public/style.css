@@ -1,0 +1,14 @@
+h1 {
+    color: #6594e0;
+    border-bottom: dashed 2px #6594e0;
+}
+
+ul, ol {
+    background: #FFFFFF;
+    padding: 0.5em 0.5em 0.5em 2em;
+    border: solid 3px black;
+    li {
+        line-height: 1;
+        padding: 0.5em 0;
+    }
+}
