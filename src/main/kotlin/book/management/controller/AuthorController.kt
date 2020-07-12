@@ -1,6 +1,7 @@
 package book.management.controller
 
-import book.management.controller.request.AuthorRequest
+import book.management.controller.request.author.AuthorRegistRequest
+import book.management.controller.request.author.AuthorUpdateRequest
 import book.management.service.AuthorService
 import io.micronaut.context.MessageSource
 import io.micronaut.http.HttpRequest
@@ -70,9 +71,48 @@ class AuthorController(
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Post("/regist")
     @View("author/index")
-    fun regist(session: Session, @Body @Valid authorRequest: AuthorRequest): Map<String, Any> {
+    fun regist(session: Session, @Body @Valid authorRequest: AuthorRegistRequest): Map<String, Any> {
         authorService.regist(authorRequest.toEntity())
         session.put("info", "著者を登録しました。")
+
+        return find(session, null)
+    }
+
+    /**
+     * 著者更新画面表示
+     */
+    @Produces(MediaType.TEXT_HTML)
+    @Get("{id}/update")
+    fun updateDisp(@QueryValue("id") id: Long): ModelAndView<*> {
+        val author = authorService.findById(id)
+        var view: String
+        val responseMap = HashMap<String, Any>()
+
+        if (author == null) {
+            view = "notFound"
+        } else {
+            view = "author/update"
+            responseMap.put("id", author.id!!)
+            responseMap.put("name", author.name)
+            author.profile?.let {
+                responseMap.put("profile", it)
+            }
+        }
+
+        val data = HashMap<String, Any>()
+        return ModelAndView(view, responseMap)
+    }
+
+    /**
+     * 著者登録画面表示
+     */
+    @Produces(MediaType.TEXT_HTML)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Post("/update")
+    @View("author/index")
+    fun update(session: Session, @Body @Valid authorUpdateRequest: AuthorUpdateRequest): Map<String, Any> {
+        authorService.update(authorUpdateRequest.toEntity())
+        session.put("info", "著者を更新しました。")
 
         return find(session, null)
     }
@@ -102,14 +142,24 @@ class AuthorController(
         val view = when (path) {
             "regist" -> {
                 // パラメータを格納
-                request.getBody(AuthorRequest::class.java).ifPresent({ authorRequest ->
-                    // responseMap.put("authorRequest", authorRequest)
+                request.getBody(AuthorRegistRequest::class.java).ifPresent({ authorRequest ->
                     responseMap.put("name", authorRequest.name)
                     authorRequest.profile?.let {
                         responseMap.put("profile", it)
                     }
                 })
                 "author/regist"
+            }
+            "update" -> {
+                // パラメータを格納
+                request.getBody(AuthorUpdateRequest::class.java).ifPresent({ authorRequest ->
+                    responseMap.put("id", authorRequest.id)
+                    responseMap.put("name", authorRequest.name)
+                    authorRequest.profile?.let {
+                        responseMap.put("profile", it)
+                    }
+                })
+                "author/update"
             }
             else -> "author/index"
         }
