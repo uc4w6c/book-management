@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>著者更新</title>
+        <link th:href="@{/public/style.css}" type="text/css" rel="stylesheet" />
+        <link th:href="@{/public/author/author.css}" type="text/css" rel="stylesheet" />
+        <meta charset="UTF-8"/>
+    </head>
+    <body>
+        <h1>著者更新フォーム</h1>
+
+        <div th:if="${not #lists.isEmpty(errors)}" class="alert">
+            <ul>
+                <li th:each="error : ${errors}" th:text="${error}"></li>
+            </ul>
+        </div>
+
+        <div class="input-form">
+            <form action="/author/update" method="POST">
+                <input type="hidden" name="id" th:value="${id}"/>
+                <p>名前</p>
+                <input type="text" name="name" th:value="${name}" size="50" maxlength="50"/>
+                <p>プロフィール</p>
+                <textarea name="profile" th:text="${profile}" cols="50" rows="3" maxlength="255"></textarea>
+                <div class="submit-box">
+                    <input type="submit" value="更新"/>
+                </div>
+            </form>
+        </div>
+
+        <footer>
+            <a href="/">トップページ</a>
+            <a href="/author/">著者一覧</a>
+        </footer>
+    </body>
+</html>

@@ -35,8 +35,10 @@
                 <th>プロフィール</th>
             </tr>
             <tr th:inline="text" th:each="author : ${authors}">
-                <td>[[${author.name}]]</td>
+                <td><a th:href="@{/author/{id}/update(id=${author.id})}">[[${author.name}]]</a></td>
                 <td>[[${author.profile}]]</td>
+                <!-- /*<td><a href="@{'/author/' + [[${author.id}]] + '/update'}" class="regist-btn"></a></td>*/ -->
+                <!-- /*<td><a href="@{/author/{id}/update(id = ${'author.id'})}" class="update-btn">更新</a></td>*/ -->
             </tr>
         </table>
 
