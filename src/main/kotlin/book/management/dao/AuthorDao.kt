@@ -2,8 +2,10 @@ package book.management.dao.config
 
 import book.management.entity.AuthorEntity
 import org.seasar.doma.Dao
+import org.seasar.doma.Insert
 import org.seasar.doma.Select
 import org.seasar.doma.Sql
+import org.seasar.doma.jdbc.Result
 
 /**
  * 著者テーブル操作
@@ -26,4 +28,7 @@ interface AuthorDao {
     @Select
     @Sql("select id, name, profile from authors where name like /* @infix(name) */'田中'")
     fun findByName(name: String): List<AuthorEntity>
+
+    @Insert
+    fun insert(authorEntity: AuthorEntity): Result<AuthorEntity>
 }

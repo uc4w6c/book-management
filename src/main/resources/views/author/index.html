@@ -9,18 +9,24 @@
     <body>
         <h1>著者一覧</h1>
 
-        <div class="find-form">
-            <p>名前で検索</p>
-            <form action="/author/" method="GET">
-                <input type="text" name="name"/>
-                <input type="submit" value="検索"/>
-            </form>
+        <div class="forms">
+            <div class="find-form">
+                <p>名前で検索</p>
+                <form action="/author/" method="GET">
+                    <input type="text" name="name"/>
+                    <input type="submit" value="検索"/>
+                </form>
+            </div>
+            <a href="/author/regist" class="regist-btn">ユーザー登録</a>
         </div>
 
-        <div th:if="${errors}" class="alert">
-            <ul th:each="error : ${errors}">
-                <li th:text="${error}"></li>
+        <div th:if="${not #lists.isEmpty(errors)}" class="alert">
+            <ul>
+                <li th:each="error : ${errors}" th:text="${error}"></li>
             </ul>
+        </div>
+        <div th:if="${info}" class="info">
+            <p th:text="${info}"></p>
         </div>
 
         <table>

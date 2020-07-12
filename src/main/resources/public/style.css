@@ -27,13 +27,28 @@ p {
     margin: 0.1em 0
 }
 
-alert {
+.info {
+    background-color: #ddffdd;
+    border-color: #99CCFF;
+    margin: 0 0 1em 0;
+    padding:10px;
+    line-height: 1.5;
+}
+
+.alert {
     border-color: #FFEFEF;
-    margin: 0 0 1em 0; padding:10px;
+    margin: 0 0 1em 0;
+    padding:10px;
     color: #C25338;
     border: 1px solid #D4440D;
     // font-size:11px;
     line-height: 1.5;
+}
+
+.alert ul, .alert ol {
+    border: none;
+    padding: 0.1em;
+    list-style: none;
 }
 
 table {

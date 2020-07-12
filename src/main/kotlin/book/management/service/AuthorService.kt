@@ -22,4 +22,12 @@ class AuthorService(private val authorDao: AuthorDao) {
             return authorDao.findByName(name)
         }
     }
+
+    /**
+     * @param AuthorEntity 著者エンティティ
+     * @return AuthorEntity 著者エンティティ
+     */
+    fun regist(authorEntity: AuthorEntity): AuthorEntity {
+        return authorDao.insert(authorEntity).entity
+    }
 }

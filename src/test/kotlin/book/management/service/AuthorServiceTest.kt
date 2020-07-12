@@ -8,6 +8,7 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.seasar.doma.jdbc.Result
 
 internal class AuthorServiceTest {
     @Nested
@@ -47,6 +48,26 @@ internal class AuthorServiceTest {
             // verify
             verify { authorDao.findByName("Taro") }
             assertEquals(actual, expect)
+        }
+    }
+
+    @Nested
+    class regist {
+        @Test
+        fun `insert可能`() {
+            // setup
+            val authorDao = mockk<AuthorDao>()
+            val expect = AuthorEntity("Taro", "profile1")
+            every { authorDao.insert(expect) } returns Result(0, expect)
+
+            // exercise
+            val authorService = AuthorService(authorDao)
+            val actual = authorService.regist(expect)
+
+            // verify
+            verify { authorDao.insert(expect) }
+            assertEquals(actual.name, expect.name)
+            assertEquals(actual.profile, expect.profile)
         }
     }
 }
