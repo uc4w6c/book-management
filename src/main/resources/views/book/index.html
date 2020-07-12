@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>書籍一覧</title>
+        <link th:href="@{/public/style.css}" type="text/css" rel="stylesheet" />
+        <link th:href="@{/public/book/book.css}" type="text/css" rel="stylesheet" />
+        <meta charset="UTF-8"/>
+    </head>
+    <body>
+        <h1>書籍一覧</h1>
+
+        <div class="forms">
+            <div class="find-form">
+                <form action="/book/find" method="GET">
+                    <p>タイトル</p>
+                    <input type="text" th:value="${title}" name="title"/>
+                    <p>出版日From</p>
+                    <select id="publication_year_from" name="publication_year_from">
+                        <option th:each="i : ${#numbers.sequence(limitPublicationToYear, limitPublicationFromYear, -1)}" th:value="${i}" th:selected="${i == publication_year_from}" th:text="${i}"></option>
+                    </select>
+                    <p>年</p>
+                    <select id="publication_month_from" name="publication_month_from">
+                        <option th:each="i : ${#numbers.sequence(1, 12)}" th:value="${i}" th:selected="${i == publication_month_from}" th:text="${i}"></option>
+                    </select>
+                    <p>月</p>
+                    <p>出版日To</p>
+                    <select id="publication_year_to" name="publication_year_to">
+                        <option th:each="i : ${#numbers.sequence(limitPublicationToYear, limitPublicationFromYear, -1)}" th:value="${i}" th:selected="${i == publication_year_to}" th:text="${i}"></option>
+                    </select>
+                    <p>年</p>
+                    <select id="publication_month_to" name="publication_month_to">
+                        <option th:each="i : ${#numbers.sequence(1, 12)}" th:value="${i}" th:selected="${i == publication_month_to}" th:text="${i}"></option>
+                    </select>
+                    <input type="submit" value="検索"/>
+                </form>
+            </div>
+        </div>
+
+        <div th:if="${not #lists.isEmpty(errors)}" class="alert">
+            <ul>
+                <li th:each="error : ${errors}" th:text="${error}"></li>
+            </ul>
+        </div>
+        <div th:if="${info}" class="info">
+            <p th:text="${info}"></p>
+        </div>
+
+        <table>
+            <tr>
+                <th class="book-title">タイトル</th>
+                <th class="book-publisher-name">出版社名</th>
+                <th class="book-publication-date">出版日</th>
+                <th class="book-summary">概要</th>
+                <th class="book-author">著者</th>
+            </tr>
+            <tr th:inline="text" th:each="book : ${books}">
+                <td th:text="${book.title != null} ? ${book.title} : '未定'"></td>
+                <td>[[${book.publisherName}]]</td>
+                <td>[[${book.publicationDate}]]</td>
+                <td>[[${book.summary}]]</td>
+                <td th:inline="text" th:each="author, stat : ${book.authorList}">
+                    [# th:if="${stat.index != 0}"],[/]
+                    [[${author.name}]]
+                </td>
+            </tr>
+        </table>
+
+        <footer>
+            <a href="/">トップページ</a>
+        </footer>
+    </body>
+</html>
