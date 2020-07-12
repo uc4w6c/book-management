@@ -1,0 +1,31 @@
+.forms {
+    width: 100%;
+    padding: 0.3em;
+    display: inline-block;
+    position: relative;
+}
+
+.find-form {
+    padding: 0.5em;
+    float: left;
+}
+
+.find-form p, .find-form input, .find-form select {
+    display: inline-block;
+}
+
+.book-title {
+    width: 150px;
+}
+.book-publisher-name {
+    width: 70px;
+}
+.book-publication-date {
+    width: 70px;
+}
+.book-summary {
+    width: 150px;
+}
+.book-author {
+    width: 100px;
+}

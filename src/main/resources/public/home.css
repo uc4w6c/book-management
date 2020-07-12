@@ -1,0 +1,20 @@
+.btn-author {
+  display: inline-block;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  margin: 0.5em 0;
+  background: #33CC00;
+  color: #FFF;
+  border-bottom: solid 4px #627295;
+  border-radius: 3px;
+}
+.btn-book {
+  display: inline-block;
+  padding: 0.5em 1em;
+  margin: 0.5em 0;
+  text-decoration: none;
+  background: #FF6666;
+  color: #FFF;
+  border-bottom: solid 4px #627295;
+  border-radius: 3px;
+}
