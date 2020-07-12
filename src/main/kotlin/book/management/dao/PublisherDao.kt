@@ -13,8 +13,8 @@ import ses.db.entity.PublisherEntity
 @DaoConfig
 interface PublisherDao {
     /**
-     * @param id 出版社IDを指定
-     * @return 出版社エンティティを返却
+     * @param id 出版社ID
+     * @return 出版社エンティティ
      */
     @Select
     @Sql("select id, password, name from publishers where id = /* id */'test'")

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>著者一覧</title>
+        <link th:href="@{/public/style.css}" type="text/css" rel="stylesheet" />
+        <link th:href="@{/public/author/author.css}" type="text/css" rel="stylesheet" />
+        <meta charset="UTF-8"/>
+    </head>
+    <body>
+        <h1>著者一覧</h1>
+
+        <div class="find-form">
+            <p>名前で検索</p>
+            <form action="/author/" method="GET">
+                <input type="text" name="name"/>
+                <input type="submit" value="検索"/>
+            </form>
+        </div>
+
+        <div th:if="${errors}" class="alert">
+            <ul th:each="error : ${errors}">
+                <li th:text="${error}"></li>
+            </ul>
+        </div>
+
+        <table>
+            <tr>
+                <th>名前</th>
+                <th>プロフィール</th>
+            </tr>
+            <tr th:inline="text" th:each="author : ${authors}">
+                <td>[[${author.name}]]</td>
+                <td>[[${author.profile}]]</td>
+            </tr>
+        </table>
+
+        <footer>
+            <a href="/">トップページ</a>
+        </footer>
+    </body>
+</html>

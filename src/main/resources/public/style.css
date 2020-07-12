@@ -1,3 +1,13 @@
+body, #wrapper {
+    min-height: 100vh;
+    position: relative;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+}
+
 h1 {
     color: #6594e0;
     border-bottom: dashed 2px #6594e0;
@@ -7,8 +17,38 @@ ul, ol {
     background: #FFFFFF;
     padding: 0.5em 0.5em 0.5em 2em;
     border: solid 3px black;
-    li {
-        line-height: 1;
-        padding: 0.5em 0;
-    }
+}
+ul.li ol.li {
+    line-height: 1;
+    padding: 0.5em 0;
+}
+
+p {
+    margin: 0.1em 0
+}
+
+alert {
+    border-color: #FFEFEF;
+    margin: 0 0 1em 0; padding:10px;
+    color: #C25338;
+    border: 1px solid #D4440D;
+    // font-size:11px;
+    line-height: 1.5;
+}
+
+table {
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    line-height: 1.5;
+    width: 100%;
+}
+
+table th {
+    // border-bottom:solid 1px #ddd;
+    background-color:#f5b932;
+    color: white;
+}
+
+table th, table td {
+    border: solid 1px black;
 }

@@ -12,8 +12,8 @@ import ses.db.entity.PublisherEntity
 @Transactional
 class LoginService(private val publisherDao: PublisherDao) {
     /**
-     * @param id 出版社IDを指定
-     * @return 出版社エンティティを返却
+     * @param id 出版社ID
+     * @return 出版社エンティティ
      */
     fun getPublisher(id: String): PublisherEntity? {
         return publisherDao.findPublisher(id)
