@@ -1,4 +1,4 @@
-package micronaut.session.dao.config
+package book.management.dao.config
 
 import javax.inject.Singleton
 import org.seasar.doma.AnnotateWith

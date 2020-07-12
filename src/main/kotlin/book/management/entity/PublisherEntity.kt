@@ -1,4 +1,4 @@
-package ses.db.entity
+package book.management.entity
 
 import org.seasar.doma.Entity
 import org.seasar.doma.Id

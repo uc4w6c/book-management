@@ -1,4 +1,4 @@
-package micronaut.session.dao.config
+package book.management.dao.config
 
 import io.micronaut.context.annotation.Factory
 import javax.inject.Singleton

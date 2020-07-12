@@ -1,4 +1,4 @@
-package ses.db.controller
+package book.management.controller
 
 import io.micronaut.context.event.ApplicationEventPublisher
 import io.micronaut.http.HttpRequest

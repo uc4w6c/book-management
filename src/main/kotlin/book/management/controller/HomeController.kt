@@ -1,4 +1,4 @@
-package ses.db.controller
+package book.management.controller
 
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller

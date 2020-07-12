@@ -1,4 +1,4 @@
-package micronaut.session.dao.config
+package book.management.dao.config
 
 import io.micronaut.aop.MethodInterceptor
 import io.micronaut.aop.MethodInvocationContext

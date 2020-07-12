@@ -1,9 +1,9 @@
 package book.management.service
 
 import book.management.dao.config.AuthorDao
+import book.management.dao.config.Transactional
 import book.management.entity.AuthorEntity
 import javax.inject.Singleton
-import micronaut.session.dao.config.Transactional
 
 /**
  * 著者サービス

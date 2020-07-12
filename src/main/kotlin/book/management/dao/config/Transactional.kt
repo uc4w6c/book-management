@@ -1,4 +1,4 @@
-package micronaut.session.dao.config
+package book.management.dao.config
 
 import io.micronaut.aop.Around
 import io.micronaut.context.annotation.Type

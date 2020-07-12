@@ -1,7 +1,6 @@
 package book.management.dao.config
 
 import book.management.entity.AuthorEntity
-import micronaut.session.dao.config.DaoConfig
 import org.seasar.doma.Dao
 import org.seasar.doma.Select
 import org.seasar.doma.Sql

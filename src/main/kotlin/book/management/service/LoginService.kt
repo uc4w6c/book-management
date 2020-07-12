@@ -1,9 +1,9 @@
-package ses.db.service
+package book.management.service
 
+import book.management.config.PublisherDao
+import book.management.dao.config.Transactional
+import book.management.entity.PublisherEntity
 import javax.inject.Singleton
-import micronaut.session.dao.config.Transactional
-import ses.db.dao.config.PublisherDao
-import ses.db.entity.PublisherEntity
 
 /**
  * ログインサービス

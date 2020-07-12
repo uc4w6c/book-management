@@ -1,10 +1,10 @@
-package ses.db.dao.config
+package book.management.config
 
-import micronaut.session.dao.config.DaoConfig
+import book.management.dao.config.DaoConfig
+import book.management.entity.PublisherEntity
 import org.seasar.doma.Dao
 import org.seasar.doma.Select
 import org.seasar.doma.Sql
-import ses.db.entity.PublisherEntity
 
 /**
  * 出版社テーブル操作

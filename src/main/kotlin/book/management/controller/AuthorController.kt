@@ -1,6 +1,5 @@
 package book.management.controller
 
-import book.management.entity.AuthorEntity
 import book.management.service.AuthorService
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller

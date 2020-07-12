@@ -1,4 +1,4 @@
-package ses.db.service
+package book.management.service
 
 import edu.umd.cs.findbugs.annotations.NonNull
 import javax.validation.constraints.NotBlank
