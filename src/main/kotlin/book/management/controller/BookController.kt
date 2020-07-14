@@ -3,6 +3,8 @@ package book.management.controller
 import book.management.controller.request.author.AuthorRegistRequest
 import book.management.controller.request.author.AuthorUpdateRequest
 import book.management.controller.request.book.BookFindRequest
+import book.management.controller.request.book.BookRegistRequest
+import book.management.exception.DataNotFoundException
 import book.management.service.AuthorService
 import book.management.service.BookService
 import book.management.utils.getFirstDayOfMonth
@@ -10,11 +12,7 @@ import book.management.utils.getLastDayOfMonth
 import io.micronaut.context.MessageSource
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
-import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Error
-import io.micronaut.http.annotation.Get
-import io.micronaut.http.annotation.Produces
-import io.micronaut.http.annotation.RequestBean
+import io.micronaut.http.annotation.*
 import io.micronaut.http.annotation.Body as Body
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
@@ -22,6 +20,7 @@ import io.micronaut.session.Session
 import io.micronaut.validation.Validated
 import io.micronaut.views.ModelAndView
 import io.micronaut.views.View
+import java.security.Principal
 import java.time.LocalDate
 import java.util.HashMap
 import javax.validation.ConstraintViolationException
@@ -34,7 +33,8 @@ import javax.validation.Valid
 @Controller("/book")
 open class BookController(
     private val messageSource: MessageSource,
-    private val bookService: BookService
+    private val bookService: BookService,
+    private val authorService: AuthorService
 ) {
 
     /**
@@ -62,7 +62,6 @@ open class BookController(
      */
     @Produces(MediaType.TEXT_HTML)
     @Get("/find{?bookFindRequest*}")
-    // @Get("/find{?title,publication_year_from,publication_month_from,publication_year_to,publication_month_to}")
     @View("book/index")
     open fun find(@Valid /*@RequestBean*/ bookFindRequest: BookFindRequest): Map<String, Any> {
         val data = HashMap<String, Any>()
@@ -115,7 +114,51 @@ open class BookController(
     }
 
     /**
-     * エラー処理
+     * 書籍登録画面表示
+     */
+    @Produces(MediaType.TEXT_HTML)
+    @Get("/regist")
+    @View("book/regist")
+    fun registDisp(): Map<String, Any> {
+        val responseMap = HashMap<String, Any>()
+        val authors = authorService.findAll()
+        responseMap.put("selectarable_author_list", authors)
+        return responseMap
+    }
+
+    /**
+     * 書籍登録
+     */
+    @Produces(MediaType.TEXT_HTML)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Post("/regist")
+    @View("book/index")
+    open fun regist(principal: Principal?, session: Session, @Body @Valid bookRequest: BookRegistRequest): Map<String, Any> {
+        val publisherId = principal!!.name
+        val book = bookService.regist(bookRequest.toEntity(publisherId), bookRequest.author_id_list)
+        session.put("info", "書籍を登録しました。")
+
+        return index(session)
+    }
+
+    /**
+     * 書籍登録のパラメータセット
+     * @param BookRegistRequest
+     * @return 書籍登録のセットされたパラメータ
+     */
+    fun registRequestSet(bookRegistRequest: BookRegistRequest): Map<String, Any> {
+        val data = HashMap<String, Any>()
+        bookRegistRequest.title?.let {
+            data.put("title", it)
+        }
+        data.put("publication_date", bookRegistRequest.publication_date)
+        data.put("summary", bookRegistRequest.summary)
+        data.put("author_id_list", bookRegistRequest.author_id_list)
+        return data
+    }
+
+    /**
+     * Validationエラー処理
      */
     @Error(exception = ConstraintViolationException::class)
     fun failed(
@@ -144,6 +187,12 @@ open class BookController(
                     responseMap.putAll(requestSet(bookFindRequest))
                 })
                 "book/index"
+            }
+            "regist" -> {
+                request.getBody(BookRegistRequest::class.java).ifPresent({ bookRegistRequest ->
+                    responseMap.putAll(registRequestSet(bookRegistRequest))
+                })
+                "book/regist"
             }
             else -> "book/index"
         }

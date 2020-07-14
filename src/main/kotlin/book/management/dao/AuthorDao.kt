@@ -25,11 +25,20 @@ interface AuthorDao {
     /**
      * idで著者を検索
      * @param id 著者id
-     * @return 著者エンティティ
+     * @return 著者エンティティリスト
      */
     @Select
     @Sql("select id, name, profile from authors where id = /* id */1")
     fun findById(id: Long): AuthorEntity?
+
+    /**
+     * id Listで著者を検索
+     * @param id 著者id
+     * @return 著者エンティティ
+     */
+    @Select
+    @Sql("select id, name, profile from authors where id in /* idList */('1', '2')")
+    fun findByIdList(idList: List<Long>): List<AuthorEntity>
 
     /**
      * 名前で著者を検索

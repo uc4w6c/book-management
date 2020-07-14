@@ -12,6 +12,14 @@ import javax.inject.Singleton
 @Transactional
 class AuthorService(private val authorDao: AuthorDao) {
     /**
+     * 全ての著者を取得
+     * @return 著者リスト
+     */
+    fun findAll(): List<AuthorEntity> {
+        return authorDao.findAll()
+    }
+
+    /**
      * 名前で著者を検索
      * @param name 著者名
      * @return 著者リスト

@@ -34,6 +34,7 @@
                     <input type="submit" value="検索"/>
                 </form>
             </div>
+            <a href="/book/regist" class="regist-btn">書籍登録</a>
         </div>
 
         <div th:if="${not #lists.isEmpty(errors)}" class="alert">
@@ -58,9 +59,11 @@
                 <td>[[${book.publisherName}]]</td>
                 <td>[[${book.publicationDate}]]</td>
                 <td>[[${book.summary}]]</td>
-                <td th:inline="text" th:each="author, stat : ${book.authorList}">
-                    [# th:if="${stat.index != 0}"],[/]
-                    [[${author.name}]]
+                <td>
+                    [# th:each="author, stat : ${book.authorList}"]
+                        [# th:if="${stat.index != 0}"],[/]
+                        [[${author.name}]]
+                    [/]
                 </td>
             </tr>
         </table>

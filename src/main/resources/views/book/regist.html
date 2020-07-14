@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>書籍登録</title>
+        <link th:href="@{/public/style.css}" type="text/css" rel="stylesheet" />
+        <link th:href="@{/public/book/book.css}" type="text/css" rel="stylesheet" />
+        <meta charset="UTF-8"/>
+    </head>
+    <body>
+        <h1>書籍登録フォーム</h1>
+
+        <div th:if="${not #lists.isEmpty(errors)}" class="alert">
+            <ul>
+                <li th:each="error : ${errors}" th:text="${error}"></li>
+            </ul>
+        </div>
+
+        <div class="input-form">
+            <form action="/book/regist" method="POST">
+                <p>タイトル</p>
+                <input type="text" name="title" th:value="${title}" size="50" maxlength="50"/>
+                <p>出版日</p>
+                <input type="date" name="publication_date" th:value="${publication_date}"/>
+                <p>概要</p>
+                <textarea name="summary" th:text="${summary}" cols="50" rows="3" maxlength="255"></textarea>
+                <div>
+                    <p>著者を選択してください。</p>
+                    <ul th:inline="text" th:each="author : ${selectarable_author_list}">
+                        <li>
+                            <input type="checkbox" name="author_id_list" th:value="${author.id}" th:text="${author.name}">
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="submit-box">
+                    <input type="submit" value="登録"/>
+                </div>
+            </form>
+        </div>
+
+        <footer>
+            <a href="/">トップページ</a>
+            <a href="/book/">書籍一覧</a>
+        </footer>
+    </body>
+</html>

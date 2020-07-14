@@ -1,9 +1,13 @@
 package book.management.dao.config
 
 import book.management.entity.BookAuthorPublisherEntity
+import book.management.entity.BookAuthorsEntity
+import book.management.entity.BookEntity
 import org.seasar.doma.Dao
+import org.seasar.doma.Insert
 import org.seasar.doma.Select
 import org.seasar.doma.Sql
+import org.seasar.doma.jdbc.Result
 import java.time.LocalDate
 
 /**
@@ -49,5 +53,21 @@ interface BookDao {
            /*%end*/
     """)
     fun findByTitlePublischer(title: String?, publicationFromDate: LocalDate, publicationToDate: LocalDate): List<BookAuthorPublisherEntity>
+
+    /**
+     * 書籍を登録
+     * @param BookEntity 書籍エンティティ
+     * @return Result<BookEntity> 書籍エンティティ
+     */
+    @Insert
+    fun insert(bookEntity: BookEntity): Result<BookEntity>
+
+    /**
+     * 書籍著者エンティティを登録
+     * @param BookAuthorsEntity 書籍著者エンティティ
+     * @return Result<BookAuthorsEntity> 書籍著者エンティティ
+     */
+    @Insert
+    fun insertBookAuthorsEntity(bookAuthorsEntity: BookAuthorsEntity): Result<BookAuthorsEntity>
 
 }
