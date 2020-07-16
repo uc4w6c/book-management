@@ -20,9 +20,11 @@ import io.micronaut.session.Session
 import io.micronaut.validation.Validated
 import io.micronaut.views.ModelAndView
 import io.micronaut.views.View
+import java.security.Principal
 import java.util.HashMap
 import javax.validation.ConstraintViolationException
 import javax.validation.Valid
+import javax.validation.constraints.NotNull
 
 /**
  * 著者操作コントローラ
@@ -41,7 +43,7 @@ class AuthorController(
     @Produces(MediaType.TEXT_HTML)
     @Get("/")
     @View("author/index")
-    fun find(session: Session, @QueryValue name: String?): Map<String, Any> {
+    fun find(principal: Principal?, session: Session, @QueryValue name: String?): Map<String, Any> {
         val authorList = authorService.find(name)
         val data = HashMap<String, Any>()
         if (authorList.size == 0) {
@@ -50,6 +52,12 @@ class AuthorController(
             data["errors"] = emptyList<String>()
         }
 
+        val publisherId = principal!!.name
+        val authorIdList = authorList.map { it.id!! }
+        val deletableAuthorSet = authorService.uniquePublisherAuthorFindByIdList(publisherId, authorIdList)
+        // TODO: 削除する
+        println("deletableAuthorSet:" + deletableAuthorSet)
+        data["deletableAuthorSet"] = deletableAuthorSet
         data["info"] = session.get("info").orElse("false")
         if (session.contains("info")) session.put("info", "")
         data["authors"] = authorList
@@ -71,11 +79,11 @@ class AuthorController(
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Post("/regist")
     @View("author/index")
-    fun regist(session: Session, @Body @Valid authorRequest: AuthorRegistRequest): Map<String, Any> {
+    fun regist(principal: Principal?, session: Session, @Body @Valid authorRequest: AuthorRegistRequest): Map<String, Any> {
         authorService.regist(authorRequest.toEntity())
         session.put("info", "著者を登録しました。")
 
-        return find(session, null)
+        return find(principal, session, null)
     }
 
     /**
@@ -110,11 +118,31 @@ class AuthorController(
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Post("/update")
     @View("author/index")
-    fun update(session: Session, @Body @Valid authorUpdateRequest: AuthorUpdateRequest): Map<String, Any> {
+    fun update(principal: Principal?, session: Session, @Body @Valid authorUpdateRequest: AuthorUpdateRequest): Map<String, Any> {
         authorService.update(authorUpdateRequest.toEntity())
         session.put("info", "著者を更新しました。")
 
-        return find(session, null)
+        return find(principal, session, null)
+    }
+
+    /**
+     *
+     */
+    @Produces(MediaType.TEXT_HTML)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Post("/delete")
+    @View("author/index")
+    open fun delete(
+        principal: Principal?,
+        session: Session,
+        @Body("author_id_list") @NotNull authorIdListString: String
+    ): Map<String, Any> {
+        val authorDeleteIdList = authorIdListString.split(',').map(String::toLong)
+        val publisherId = principal!!.name
+        authorService.delete(publisherId, authorDeleteIdList)
+        session.put("info", "書籍を削除しました。")
+
+        return find(principal, session, null)
     }
 
     /**

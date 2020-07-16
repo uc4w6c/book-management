@@ -3,9 +3,14 @@ package book.management.dao.config
 import book.management.entity.BookAuthorPublisherEntity
 import book.management.entity.BookAuthorsEntity
 import book.management.entity.BookEntity
-import org.seasar.doma.*
-import org.seasar.doma.jdbc.Result
 import java.time.LocalDate
+import org.seasar.doma.Dao
+import org.seasar.doma.Delete
+import org.seasar.doma.Insert
+import org.seasar.doma.Select
+import org.seasar.doma.Sql
+import org.seasar.doma.Update
+import org.seasar.doma.jdbc.Result
 
 /**
  * 書籍テーブル操作
@@ -95,6 +100,15 @@ interface BookDao {
     fun deleteByBookIdList(bookIdList: List<Long>): Int
 
     /**
+     * 指定した著者IDリストの書籍著者エンティティリストを返却
+     * @param authorIdList 著者IDリスト
+     * @return Int 削除した件数
+     */
+    @Select
+    @Sql("select book_id, author_id from book_authors where author_id in /* authorIdList */('1', '2')")
+    fun findBookAuthorsEntityByAuthorId(authorIdList: List<Long>): List<BookAuthorsEntity>
+
+    /**
      * 書籍著者エンティティを登録
      * @param BookAuthorsEntity 書籍著者エンティティ
      * @return Result<BookAuthorsEntity> 書籍著者エンティティ
@@ -119,6 +133,15 @@ interface BookDao {
     @Delete
     @Sql("delete from book_authors where book_id in /* bookIdList */('1', '2')")
     fun deleteBookAuthorsEntityByBookIdList(bookIdList: List<Long>): Int
+
+    /**
+     * 指定した著者IDの書籍著者エンティティを削除
+     * @param bookIdList 書籍著者エンティティ
+     * @return Int 削除した件数
+     */
+    @Delete
+    @Sql("delete from book_authors where author_id in /* authorList */('1', '2')")
+    fun deleteBookAuthorsEntityByAuthorIdList(authorList: List<Long>): Int
 
     /**
      * 書籍著者エンティティを更新

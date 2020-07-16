@@ -6,9 +6,6 @@ import io.micronaut.core.annotation.Creator
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.annotation.QueryValue
 import java.time.LocalDate
-import javax.annotation.Nullable
-import javax.validation.ConstraintViolation
-import javax.validation.ConstraintViolationException
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.Size
@@ -49,7 +46,7 @@ class BookFindRequest @Creator constructor(
             val defaultPublicationFromDate = defaultPublicationFromDate()
             val defaultPublicationToDate = defaultPublicationToDate()
 
-            return BookFindRequest( null,
+            return BookFindRequest(null,
                                     defaultPublicationFromDate.year,
                                     defaultPublicationFromDate.monthValue,
                                     defaultPublicationToDate.year,
@@ -79,7 +76,7 @@ class BookFindRequest @Creator constructor(
          * @return LocalDate 検索可能出版From日
          */
         fun searchablePublicationFromDate(): LocalDate {
-            return LocalDate.of(1980,1,1)
+            return LocalDate.of(1980, 1, 1)
         }
 
         /**

@@ -1,26 +1,25 @@
 package book.management.controller
 
-import book.management.controller.request.author.AuthorRegistRequest
-import book.management.controller.request.author.AuthorUpdateRequest
 import book.management.controller.request.book.BookFindRequest
 import book.management.controller.request.book.BookRegistRequest
 import book.management.controller.request.book.BookUpdateRequest
-import book.management.exception.DataNotFoundException
 import book.management.exception.NotUpdatableException
 import book.management.service.AuthorService
 import book.management.service.BookService
-import book.management.utils.getFirstDayOfMonth
-import book.management.utils.getLastDayOfMonth
 import io.micronaut.context.MessageSource
-import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
-import io.micronaut.http.annotation.*
 import io.micronaut.http.annotation.Body as Body
+import io.micronaut.http.annotation.Consumes
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Error
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Post
+import io.micronaut.http.annotation.Produces
+import io.micronaut.http.annotation.QueryValue
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
 import io.micronaut.session.Session
-import io.micronaut.validation.Validated
 import io.micronaut.views.ModelAndView
 import io.micronaut.views.View
 import java.security.Principal
@@ -28,7 +27,6 @@ import java.time.LocalDate
 import java.util.HashMap
 import javax.validation.ConstraintViolationException
 import javax.validation.Valid
-import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
 /**
@@ -234,8 +232,8 @@ open class BookController(
     // TODO: 遷移しない。要修正
     @Error(exception = NotUpdatableException::class)
     fun updateFailed(
-            request: HttpRequest<Map<String, Any>>,
-            ex: NotUpdatableException
+        request: HttpRequest<Map<String, Any>>,
+        ex: NotUpdatableException
     ): ModelAndView<*> {
         val responseMap = HashMap<String, Any>()
         responseMap["errors"] = listOf(ex.message)
@@ -255,9 +253,9 @@ open class BookController(
     @Post("/delete")
     @View("book/index")
     open fun delete(
-            principal: Principal?,
-            session: Session,
-            @Body("book_id_list") @NotNull bookDeleteIdValue: String
+        principal: Principal?,
+        session: Session,
+        @Body("book_id_list") @NotNull bookDeleteIdValue: String
     ): Map<String, Any> {
         val bookDeleteIdList = bookDeleteIdValue.split(',').map(String::toLong)
         val publisherId = principal!!.name
@@ -272,8 +270,8 @@ open class BookController(
      */
     @Error(exception = ConstraintViolationException::class)
     fun failed(
-            request: HttpRequest<Map<String, Any>>,
-            ex: ConstraintViolationException
+        request: HttpRequest<Map<String, Any>>,
+        ex: ConstraintViolationException
     ): ModelAndView<*> {
         val responseMap = HashMap<String, Any>()
         responseMap["errors"] = ex.constraintViolations

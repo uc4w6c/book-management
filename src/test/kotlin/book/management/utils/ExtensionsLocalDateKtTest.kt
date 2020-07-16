@@ -1,10 +1,9 @@
 package book.management.utils
 
-import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Nested
 import java.time.LocalDate
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
 internal class ExtensionsLocalDateKtTest {
 
@@ -22,7 +21,6 @@ internal class ExtensionsLocalDateKtTest {
             // verify
             assertEquals(expect, actual)
         }
-
     }
 
     @Nested

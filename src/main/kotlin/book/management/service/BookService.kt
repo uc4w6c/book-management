@@ -5,8 +5,8 @@ import book.management.dao.config.BookDao
 import book.management.dao.config.Transactional
 import book.management.entity.AuthorEntity
 import book.management.entity.BookAuthorPublisherEntity
-import book.management.entity.BookEntity
 import book.management.entity.BookAuthorsEntity
+import book.management.entity.BookEntity
 import book.management.exception.DataNotFoundException
 import book.management.exception.NotUpdatableException
 import book.management.exception.PublisherPermissionException
