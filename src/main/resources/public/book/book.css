@@ -24,11 +24,27 @@
     padding: 0.3em;
     text-align: center;
     float: left;
-    position: absolute;
     bottom: 0;
     margin: 0.7em
 }
 
+.delete-btn {
+    display: inline-block;
+    border-radius: 10%;
+    font-size: 10pt;
+    border: 2px solid #666666;
+    color: #ffffff;
+    background-color: #FF3399;
+    padding: 0.3em;
+    text-align: center;
+    float: left;
+    bottom: 0;
+    margin: 0.7em
+}
+
+.delete-check {
+    width: 30px;
+}
 .book-title {
     width: 150px;
 }

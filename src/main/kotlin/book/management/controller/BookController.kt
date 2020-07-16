@@ -12,6 +12,7 @@ import book.management.service.BookService
 import book.management.utils.getFirstDayOfMonth
 import book.management.utils.getLastDayOfMonth
 import io.micronaut.context.MessageSource
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
@@ -27,6 +28,8 @@ import java.time.LocalDate
 import java.util.HashMap
 import javax.validation.ConstraintViolationException
 import javax.validation.Valid
+import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
 
 /**
  * 書籍操作コントローラ
@@ -45,7 +48,7 @@ open class BookController(
     @Produces(MediaType.TEXT_HTML)
     @Get("/")
     @View("book/index")
-    fun index(session: Session): Map<String, Any> {
+    fun index(principal: Principal?, session: Session): Map<String, Any> {
         val data = HashMap<String, Any>()
 
         val defaultBookFind = BookFindRequest.defaultBuild()
@@ -53,6 +56,7 @@ open class BookController(
         data.putAll(bookFind(defaultBookFind.title, defaultBookFind.getPublicationFromDate(), defaultBookFind.getPublicationToDate()))
         data.putAll(requestSet(defaultBookFind))
 
+        data["publisherId"] = principal!!.name
         data["info"] = session.get("info").orElse("false")
         if (session.contains("info")) session.put("info", "")
 
@@ -65,7 +69,7 @@ open class BookController(
     @Produces(MediaType.TEXT_HTML)
     @Get("/find{?bookFindRequest*}")
     @View("book/index")
-    open fun find(@Valid /*@RequestBean*/ bookFindRequest: BookFindRequest): Map<String, Any> {
+    open fun find(principal: Principal?, @Valid /*@RequestBean*/ bookFindRequest: BookFindRequest): Map<String, Any> {
         val data = HashMap<String, Any>()
 
         data.putAll(requestSet(bookFindRequest))
@@ -76,6 +80,7 @@ open class BookController(
         }
 
         data.putAll(bookFind(bookFindRequest.title, bookFindRequest.getPublicationFromDate(), bookFindRequest.getPublicationToDate()))
+        data["publisherId"] = principal!!.name
         return data
     }
 
@@ -140,7 +145,7 @@ open class BookController(
         val book = bookService.regist(bookRequest.toEntity(publisherId), bookRequest.author_id_list)
         session.put("info", "書籍を登録しました。")
 
-        return index(session)
+        return index(principal, session)
     }
 
     /**
@@ -201,7 +206,7 @@ open class BookController(
         bookService.update(publisherId, bookUpdateRequest.toEntity(publisherId), bookUpdateRequest.author_id_list)
         session.put("info", "書籍を更新しました。")
 
-        return index(session)
+        return index(principal, session)
     }
 
     /**
@@ -243,6 +248,26 @@ open class BookController(
     }
 
     /**
+     *
+     */
+    @Produces(MediaType.TEXT_HTML)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Post("/delete")
+    @View("book/index")
+    open fun delete(
+            principal: Principal?,
+            session: Session,
+            @Body("book_id_list") @NotNull bookDeleteIdValue: String
+    ): Map<String, Any> {
+        val bookDeleteIdList = bookDeleteIdValue.split(',').map(String::toLong)
+        val publisherId = principal!!.name
+        bookService.delete(publisherId, bookDeleteIdList)
+        session.put("info", "書籍を削除しました。")
+
+        return index(principal, session)
+    }
+
+    /**
      * Validationエラー処理
      */
     @Error(exception = ConstraintViolationException::class)
@@ -250,7 +275,6 @@ open class BookController(
             request: HttpRequest<Map<String, Any>>,
             ex: ConstraintViolationException
     ): ModelAndView<*> {
-
         val responseMap = HashMap<String, Any>()
         responseMap["errors"] = ex.constraintViolations
                 .map { constraintViolation ->

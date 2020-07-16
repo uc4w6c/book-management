@@ -4,6 +4,7 @@
         <title>書籍一覧</title>
         <link th:href="@{/public/style.css}" type="text/css" rel="stylesheet" />
         <link th:href="@{/public/book/book.css}" type="text/css" rel="stylesheet" />
+        <script th:src="@{/public/book/book.js}" type="text/javascript"></script>
         <meta charset="UTF-8"/>
     </head>
     <body>
@@ -35,6 +36,7 @@
                 </form>
             </div>
             <a href="/book/regist" class="regist-btn">書籍登録</a>
+            <a href="#" class="delete-btn" onclick="deleteBook()">書籍削除</a>
         </div>
 
         <div th:if="${not #lists.isEmpty(errors)}" class="alert">
@@ -48,24 +50,29 @@
 
         <table>
             <tr>
+                <th class="delete-check">削除対象</th>
                 <th class="book-title">タイトル</th>
                 <th class="book-publisher-name">出版社名</th>
                 <th class="book-publication-date">出版日</th>
                 <th class="book-summary">概要</th>
                 <th class="book-author">著者</th>
             </tr>
-            <tr th:inline="text" th:each="book : ${books}">
-                <td><a th:href="@{/book/{id}/update(id=${book.id})}">[[${book.title != null} ? ${book.title} : '未定']]</a></td>
-                <td>[[${book.publisherName}]]</td>
-                <td>[[${book.publicationDate}]]</td>
-                <td>[[${book.summary}]]</td>
-                <td>
-                    [# th:each="author, stat : ${book.authorList}"]
-                        [# th:if="${stat.index != 0}"],[/]
-                        [[${author.name}]]
-                    [/]
-                </td>
-            </tr>
+            <form id="delete-form" action="/book/delete" method="POST">
+                <tr th:inline="text" th:each="book : ${books}">
+                    <td><input th:if="${publisherId == book.publisherId}" type="checkbox" name="book_id_list[]" th:value="${book.id}"></td>
+                    <td><a th:href="@{/book/{id}/update(id=${book.id})}">[[${book.title != null} ? ${book.title} : '未定']]</a></td>
+                    <td>[[${book.publisherName}]]</td>
+                    <td>[[${book.publicationDate}]]</td>
+                    <td>[[${book.summary}]]</td>
+                    <td>
+                        [# th:each="author, stat : ${book.authorList}"]
+                            [# th:if="${stat.index != 0}"],[/]
+                            [[${author.name}]]
+                        [/]
+                    </td>
+                </tr>
+                <input type="hidden" id="book_id_list" name="book_id_list">
+            </form>
         </table>
 
         <footer>

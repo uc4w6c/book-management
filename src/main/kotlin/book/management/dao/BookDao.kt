@@ -27,6 +27,19 @@ interface BookDao {
     fun findById(id: Long): BookEntity?
 
     /**
+     * 書籍IDで書籍を検索
+     * @param id 書籍ID
+     * @return 書籍
+     */
+    @Select
+    @Sql("""
+       select id, title, publisher_id, publication_date, summary
+       from books where id in /* idList */('1', '2')
+    """
+    )
+    fun findByIdList(idList: List<Long>): List<BookEntity>
+
+    /**
      * 著者データをタイトルと出版日で検索
      * @param title タイトル
      * @param publicationFromDate 出版日検索from
@@ -73,6 +86,15 @@ interface BookDao {
     fun insert(bookEntity: BookEntity): Result<BookEntity>
 
     /**
+     * 指定した書籍IDの書籍を削除
+     * @param bookIdList 書籍著者エンティティ
+     * @return Int 削除した件数
+     */
+    @Delete
+    @Sql("delete from books where id in /* bookIdList */('1', '2')")
+    fun deleteByBookIdList(bookIdList: List<Long>): Int
+
+    /**
      * 書籍著者エンティティを登録
      * @param BookAuthorsEntity 書籍著者エンティティ
      * @return Result<BookAuthorsEntity> 書籍著者エンティティ
@@ -88,6 +110,15 @@ interface BookDao {
     @Delete
     @Sql("delete from book_authors where book_id = /* bookId */'1'")
     fun deleteBookAuthorsEntity(bookId: Long): Int
+
+    /**
+     * 指定した書籍IDの書籍著者エンティティを削除
+     * @param bookIdList 書籍著者エンティティ
+     * @return Int 削除した件数
+     */
+    @Delete
+    @Sql("delete from book_authors where book_id in /* bookIdList */('1', '2')")
+    fun deleteBookAuthorsEntityByBookIdList(bookIdList: List<Long>): Int
 
     /**
      * 書籍著者エンティティを更新

@@ -308,7 +308,6 @@ internal class BookServiceTest {
             val bookAuthorsEntity = BookAuthorsEntity(1L, 1L)
             val authors = listOf(AuthorEntity(1, "Taro", null))
 
-            // List<AuthorEntity>
             every { bookDao.findById(updateBookEntity.id!!) } returns beforeBook
             every { authorDao.findByIdList(authorIdList) } returns authors
             every { bookDao.deleteBookAuthorsEntity(updateBookEntity.id!!) } returns 1
@@ -326,6 +325,59 @@ internal class BookServiceTest {
             verify { bookDao.deleteBookAuthorsEntity(updateBookEntity.id!!) }
             verify { bookDao.insertBookAuthorsEntity(bookAuthorsEntity) }
             verify { bookDao.update(updateBookEntity) }
+        }
+    }
+
+    @Nested
+    class delete {
+        @Test
+        fun `削除対象書籍の出版社IDが異なるエラー`() {
+            // setup
+            val bookDao = mockk<BookDao>()
+            val authorDao = mockk<AuthorDao>()
+
+            val publisherId = "id1"
+            val bookIdList = listOf(1L)
+            val bookEntityList = listOf(
+                BookEntity(1L, "title1", "id2", LocalDate.now().plusDays(1), "summary1")
+            )
+
+            every { bookDao.findByIdList(bookIdList) } returns bookEntityList
+
+            // exercise
+            val bookService = BookService(bookDao, authorDao)
+
+            // verify
+            assertThrows(PublisherPermissionException::class.java) { bookService.delete(publisherId, bookIdList) }
+            verify { bookDao.findByIdList(bookIdList) }
+        }
+
+        @Test
+        fun `削除可能`() {
+            // setup
+            val bookDao = mockk<BookDao>()
+            val authorDao = mockk<AuthorDao>()
+
+            val publisherId = "id1"
+            val bookIdList = listOf(1L)
+            val bookEntityList = listOf(
+                    BookEntity(1L, "title1", "id1", LocalDate.now().plusDays(1), "summary1")
+            )
+
+            every { bookDao.findByIdList(bookIdList) } returns bookEntityList
+
+            val deleteIdList = bookEntityList.map { it.id!! }
+            every { bookDao.deleteBookAuthorsEntityByBookIdList(deleteIdList) } returns 1
+            every { bookDao.deleteByBookIdList(deleteIdList) } returns 1
+
+            // exercise
+            val bookService = BookService(bookDao, authorDao)
+            bookService.delete(publisherId, bookIdList)
+
+            // verify
+            verify { bookDao.findByIdList(bookIdList) }
+            verify { bookDao.deleteBookAuthorsEntityByBookIdList(deleteIdList) }
+            verify { bookDao.deleteByBookIdList(deleteIdList) }
         }
     }
 }

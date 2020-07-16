@@ -98,4 +98,18 @@ class BookService(private val bookDao: BookDao, private val authorDao: AuthorDao
 
         return bookDao.update(updateBookEntity).entity
     }
+
+    /**
+     * 書籍を削除
+     * @param List<Long> 削除対象書籍IDリスト
+     */
+    fun delete(publisherId: String, bookIdList: List<Long>) {
+        val bookEntityList = bookDao.findByIdList(bookIdList)
+        if (bookEntityList.any { bookEntity -> publisherId != bookEntity.publisherId })
+            throw PublisherPermissionException("指定した書籍は削除できません。")
+
+        val deleteIdList = bookEntityList.map { it.id!! }
+        bookDao.deleteBookAuthorsEntityByBookIdList(deleteIdList)
+        bookDao.deleteByBookIdList(deleteIdList)
+    }
 }
