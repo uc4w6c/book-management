@@ -1,6 +1,7 @@
 package book.management.dao.config
 
 import book.management.entity.AuthorEntity
+import book.management.entity.BookEntity
 import org.seasar.doma.Dao
 import org.seasar.doma.Insert
 import org.seasar.doma.Select
@@ -48,6 +49,24 @@ interface AuthorDao {
     @Select
     @Sql("select id, name, profile from authors where name like /* @infix(name) */'田中'")
     fun findByName(name: String): List<AuthorEntity>
+
+    /**
+     * 書籍IDで著者一覧を取得
+     * @param id 書籍ID
+     * @return 書籍
+     */
+    @Select
+    @Sql("""
+        select
+            authors.id, authors.name, authors.profile
+        from
+            authors
+        inner join
+            book_authors
+            on book_authors.author_id = authors.id
+        where book_authors.book_id = /* id */'1'
+    """)
+    fun findByBookId(id: Long): List<AuthorEntity>
 
     /**
      * 著者を登録

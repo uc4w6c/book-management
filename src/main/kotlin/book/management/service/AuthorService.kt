@@ -42,6 +42,15 @@ class AuthorService(private val authorDao: AuthorDao) {
     }
 
     /**
+     * 書籍IDで著者一覧を取得
+     * @param id 書籍ID
+     * @return 書籍
+     */
+    fun findByBookId(id: Long): List<AuthorEntity> {
+        return authorDao.findByBookId(id)
+    }
+
+    /**
      * 著者を登録
      * @param AuthorEntity 著者エンティティ
      * @return AuthorEntity 著者エンティティ

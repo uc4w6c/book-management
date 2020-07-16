@@ -55,7 +55,7 @@
                 <th class="book-author">著者</th>
             </tr>
             <tr th:inline="text" th:each="book : ${books}">
-                <td th:text="${book.title != null} ? ${book.title} : '未定'"></td>
+                <td><a th:href="@{/book/{id}/update(id=${book.id})}">[[${book.title != null} ? ${book.title} : '未定']]</a></td>
                 <td>[[${book.publisherName}]]</td>
                 <td>[[${book.publicationDate}]]</td>
                 <td>[[${book.summary}]]</td>

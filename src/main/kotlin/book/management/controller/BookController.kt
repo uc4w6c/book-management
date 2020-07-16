@@ -4,7 +4,9 @@ import book.management.controller.request.author.AuthorRegistRequest
 import book.management.controller.request.author.AuthorUpdateRequest
 import book.management.controller.request.book.BookFindRequest
 import book.management.controller.request.book.BookRegistRequest
+import book.management.controller.request.book.BookUpdateRequest
 import book.management.exception.DataNotFoundException
+import book.management.exception.NotUpdatableException
 import book.management.service.AuthorService
 import book.management.service.BookService
 import book.management.utils.getFirstDayOfMonth
@@ -158,6 +160,89 @@ open class BookController(
     }
 
     /**
+     * 書籍更新画面表示
+     */
+    @Produces(MediaType.TEXT_HTML)
+    @Get("{id}/update")
+    @View("book/update")
+    fun updateDisp(@QueryValue("id") id: Long): ModelAndView<*> {
+        val responseMap = HashMap<String, Any>()
+        var view: String
+
+        val book = bookService.findById(id)
+        if (book == null) {
+            view = "notFound"
+        } else {
+            view = "book/update"
+            responseMap.put("id", book.id!!)
+            book.title?.let {
+                responseMap.put("title", it)
+            }
+            responseMap.put("publication_date", book.publicationDate)
+            responseMap.put("summary", book.summary)
+        }
+
+        val selectableAuthors = authorService.findAll()
+        responseMap.put("selectarable_author_list", selectableAuthors)
+        val authors = authorService.findByBookId(id)
+        responseMap.put("author_id_list", authors.map { it.id })
+        return ModelAndView(view, responseMap)
+    }
+
+    /**
+     * 書籍更新
+     */
+    @Produces(MediaType.TEXT_HTML)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Post("/update")
+    @View("book/index")
+    open fun update(principal: Principal?, session: Session, @Body @Valid bookUpdateRequest: BookUpdateRequest): Map<String, Any> {
+        val publisherId = principal!!.name
+        bookService.update(publisherId, bookUpdateRequest.toEntity(publisherId), bookUpdateRequest.author_id_list)
+        session.put("info", "書籍を更新しました。")
+
+        return index(session)
+    }
+
+    /**
+     * 書籍更新のパラメータセット
+     * @param BookRegistRequest
+     * @return 書籍登録のセットされたパラメータ
+     */
+    fun updateRequestSet(bookUpdateRequest: BookUpdateRequest): Map<String, Any> {
+        val data = HashMap<String, Any>()
+        bookUpdateRequest.id?.let {
+            data.put("id", it)
+        }
+        bookUpdateRequest.title?.let {
+            data.put("title", it)
+        }
+        data.put("publication_date", bookUpdateRequest.publication_date)
+        data.put("summary", bookUpdateRequest.summary)
+        data.put("author_id_list", bookUpdateRequest.author_id_list)
+        return data
+    }
+
+    /**
+     * 更新時エラー処理
+     */
+    // TODO: 遷移しない。要修正
+    @Error(exception = NotUpdatableException::class)
+    fun updateFailed(
+            request: HttpRequest<Map<String, Any>>,
+            ex: NotUpdatableException
+    ): ModelAndView<*> {
+        val responseMap = HashMap<String, Any>()
+        responseMap["errors"] = listOf(ex.message)
+
+        request.getBody(BookUpdateRequest::class.java).ifPresent({ bookUpdateRequest ->
+            responseMap.putAll(updateRequestSet(bookUpdateRequest))
+        })
+
+        return ModelAndView("book/update", responseMap)
+    }
+
+    /**
      * Validationエラー処理
      */
     @Error(exception = ConstraintViolationException::class)
@@ -193,6 +278,12 @@ open class BookController(
                     responseMap.putAll(registRequestSet(bookRegistRequest))
                 })
                 "book/regist"
+            }
+            "update" -> {
+                request.getBody(BookUpdateRequest::class.java).ifPresent({ bookUpdateRequest ->
+                    responseMap.putAll(updateRequestSet(bookUpdateRequest))
+                })
+                "book/update"
             }
             else -> "book/index"
         }

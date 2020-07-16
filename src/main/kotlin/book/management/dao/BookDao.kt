@@ -3,10 +3,7 @@ package book.management.dao.config
 import book.management.entity.BookAuthorPublisherEntity
 import book.management.entity.BookAuthorsEntity
 import book.management.entity.BookEntity
-import org.seasar.doma.Dao
-import org.seasar.doma.Insert
-import org.seasar.doma.Select
-import org.seasar.doma.Sql
+import org.seasar.doma.*
 import org.seasar.doma.jdbc.Result
 import java.time.LocalDate
 
@@ -16,6 +13,19 @@ import java.time.LocalDate
 @Dao
 @DaoConfig
 interface BookDao {
+    /**
+     * 書籍IDで書籍を検索
+     * @param id 書籍ID
+     * @return 書籍
+     */
+    @Select
+    @Sql("""
+       select id, title, publisher_id, publication_date, summary
+       from books where id = /* id */'1'
+    """
+    )
+    fun findById(id: Long): BookEntity?
+
     /**
      * 著者データをタイトルと出版日で検索
      * @param title タイトル
@@ -70,4 +80,20 @@ interface BookDao {
     @Insert
     fun insertBookAuthorsEntity(bookAuthorsEntity: BookAuthorsEntity): Result<BookAuthorsEntity>
 
+    /**
+     * 書籍著者エンティティを削除
+     * @param BookAuthorsEntity 書籍著者エンティティ
+     * @return Result<BookAuthorsEntity> 書籍著者エンティティ
+     */
+    @Delete
+    @Sql("delete from book_authors where book_id = /* bookId */'1'")
+    fun deleteBookAuthorsEntity(bookId: Long): Int
+
+    /**
+     * 書籍著者エンティティを更新
+     * @param BookEntity 書籍エンティティ
+     * @return Result<BookEntity> 更新後の書籍エンティティ
+     */
+    @Update
+    fun update(bookEntity: BookEntity): Result<BookEntity>
 }
